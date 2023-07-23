@@ -1,0 +1,47 @@
+MicroPM system:
+
+User Service:
+Handles user registration and authentication.
+Manages user profiles and authorization.
+
+Project Service:
+Manages project creation and retrieval.
+Stores project details such as name and description.
+
+Task Service:
+Handles task creation, retrieval, and updates.
+Manages task details, including title, description, and status.
+Handles task assignment to team members.
+
+Comment Service:
+Manages comments on tasks for user collaboration.
+Stores comments with associated task and user details.
+
+Dashboard Service:
+Provides aggregated data for the user dashboard.
+Retrieves task and project summaries for display.
+
+Search Service:
+Handles search functionality for projects and tasks.
+Provides search capabilities based on keywords and filters.
+
+Workflow Orchestration Service:
+Manages custom workflows for components within the MicroPM system.
+Allows administrators to define and configure workflows for specific modules or components.
+Orchestrates the flow of workflows based on defined steps, transitions, conditions, and actions.
+Integrates with other services to execute custom workflows when specific events or conditions occur.
+
+
+MircoPM will use a full modern microservices architecture. Create the User Epics and NFR Requirements.
+You are required to come up with the operations of each service with their service contracts. How the end user will 
+communicate and how the services would communicate with each other for Project, Task or Comment submission and notification.
+Implementation of the use cases and test cases.
+
+using C#, .net 6, xUnit for testing, CQRS with Mediatr, Fluent Validation, Repository Pattern, DDD, TDD, SOLID Principles, KISS, DRY, YAGNI, Clean architecture.
+The system should be able to scale up and down as per load.
+Any change in the system should be quickly and easily deployed on any platform without impacting other
+part of the system
+Business should not stop if any of the service or component is down
+Any issue for a customer request can be quickly traced
+Real time metrics of system performance can be seen and alert raised for any issue
+ 
