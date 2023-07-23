@@ -5,10 +5,10 @@ public enum Role
     ProjectAdmin,
     User
 }
-
 public enum ProjectStatus
 {
     draft,
     approved,
+    rejected,
     deleted
 }
