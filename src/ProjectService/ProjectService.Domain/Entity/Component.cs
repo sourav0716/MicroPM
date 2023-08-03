@@ -1,18 +1,20 @@
 using ProjectService.Domain.Common;
 
 namespace ProjectService.Domain.Entity;
-
 public class Component : AuditableEntity
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public List<User>? Users { get; set; }
-    public Workflow? Workflow { get; set; }
+    public Guid Id { get; private set; }
+    public Details Details { get; private set; }
 
-    public Component(string name, string description)
+    public Component(Details details)
     {
-        Name = name;
-        Description = description;
+        Id = Guid.NewGuid();
+        Details = details;
+    }
+
+    public void UpdateDetails(Details details,Guid id)
+    {
+        Id=id;
+        Details =  details;
     }
 }

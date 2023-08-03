@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ProjectService.Domain.Common;
 public abstract class BaseEntity
 {
-
     private readonly List<BaseEvent> _domainEvents = new();
 
     [NotMapped]

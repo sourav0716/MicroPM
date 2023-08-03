@@ -1,4 +1,4 @@
-namespace ProjectService.Application.Common.Error;
+namespace ProjectService.Application.Common.Errors;
 
 public class DuplicateException : Exception
 {

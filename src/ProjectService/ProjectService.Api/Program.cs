@@ -1,6 +1,11 @@
+using ProjectService.Application;
+using ProjectService.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers();
+    builder.Services.AddApplicationServices();
+    builder.Services.AddInfrastructure();
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();

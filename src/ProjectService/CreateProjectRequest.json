@@ -1,0 +1,36 @@
+{
+    "name": "Project1",
+    "description": "Abdc",
+    "owner": "User1",
+    "admin": "Admin1",
+    "workflow": "workflow1",
+    "users": [
+        {
+            "username": "user3"
+        },
+        {
+            "username": "user4"
+        },
+        {
+            "username": "user5"
+        }
+    ],
+    "usergroup" :[
+        {
+            "group" : "GroupA"
+        },
+        {
+            "group" : "GroupB"
+        }
+    ],
+    "components": [
+         {
+            "name": "c2",
+            "description": "Abdc"
+        },
+        {
+            "name": "c3",
+            "description": "Abdc2"
+        }
+    ]
+}
