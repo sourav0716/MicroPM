@@ -4,5 +4,5 @@ namespace ProjectService.Application.Common.Interfaces;
 
 public interface IUserService
 {
-    public Task<Guid> GetUserByUserNameAsync(string username);
+    public Task<Guid> GetUserIdByUserNameAsync(string username,CancellationToken cancellationToken);
 }

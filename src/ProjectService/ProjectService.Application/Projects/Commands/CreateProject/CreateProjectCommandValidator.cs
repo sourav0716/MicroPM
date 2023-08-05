@@ -1,7 +1,7 @@
 using FluentValidation;
 using ProjectService.Application.Common.Interfaces;
 
-namespace ProjectService.Application.Projects.Commands.CreateProjectCommand;
+namespace ProjectService.Application.Projects.Commands.CreateProject;
 
 public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
 {
@@ -10,7 +10,7 @@ public class CreateProjectCommandValidator : AbstractValidator<CreateProjectComm
     {
         _projectService = projectService;
         RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required.");
-        RuleFor(x => x.Owner).NotNull().WithMessage("Owner is required.");
+        RuleFor(x => x.Owner).NotEmpty().WithMessage("Owner is required.");
         RuleFor(x => x.Name).NotEmpty().WithMessage("Project name is required.")
              .MustAsync(async (name, cancellation) => !await DoesProjectAlreadyExist(name,cancellation))
              .WithMessage("Project name already exists.");

@@ -8,8 +8,8 @@ namespace ProjectService.Api.Controllers
     [Route("api/[controller]")]
     public class ProjectController : ApiControllerBase
     {
-       [HttpPost]
-        public async Task<ActionResult<Project>> Create(CreateProjectCommand command)
+        [HttpPost]
+        public async Task<ActionResult<Guid>> Create(CreateProjectCommand command)
         {
             return await Mediator.Send(command);
         }

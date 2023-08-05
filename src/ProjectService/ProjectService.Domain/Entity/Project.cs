@@ -35,6 +35,14 @@ public class Project : AuditableEntity
         var component = new Component(componentDetails);
         Components.Add(component);
     }
+    public void RemoveComponent(Guid componentId)
+    {
+        var component = Components.FirstOrDefault(c => c.Id == componentId);
+        if (component != null)
+        {
+            Components.Remove(component);
+        }
+    }
 
     public void AddUser(Guid userId)
     {
@@ -76,7 +84,14 @@ public class Project : AuditableEntity
     {
         return _groupIds.Remove(groupId);
     }
-
+    public void UpdateDetails(Details details)
+    {
+        Details = details;
+    }
+    public void UpdateWorkFlow(Guid workflowId)
+    {
+        WorkflowId = workflowId;
+    }
     public void ChangeStatus(ProjectStatus newStatus)
     {
         ProjectStatus = newStatus;

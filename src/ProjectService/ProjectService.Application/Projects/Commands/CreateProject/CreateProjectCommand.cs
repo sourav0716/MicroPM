@@ -2,11 +2,10 @@ using MediatR;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Domain.Entity;
 using ProjectService.Application.DTOs;
-using ProjectService.Application.Common.Errors;
 
-namespace ProjectService.Application.Projects.Commands.CreateProjectCommand;
+namespace ProjectService.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommand : IRequest<Project>
+public class CreateProjectCommand : IRequest<Guid>
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -17,7 +16,7 @@ public class CreateProjectCommand : IRequest<Project>
     public string Workflow { get; set; } = string.Empty;
     public List<string>? Admin { get; set; }
 }
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Project>
+public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Guid>
 {
     private readonly IValidationService _validationService;
 
@@ -27,7 +26,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         _validationService = validationService;
     }
 
-    public async Task<Project> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         var owner = await _validationService.ValidateUser(request.Owner);
         Project project = new(
@@ -67,6 +66,6 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             }
 
         }
-        return project;
+        return project.Id;
     }
 }
