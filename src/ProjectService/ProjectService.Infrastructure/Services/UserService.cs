@@ -8,7 +8,7 @@ namespace ProjectService.Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        public Task<Guid> GetUserByUserNameAsync(string username)
+        public Task<Guid> GetUserIdByUserNameAsync(string username, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

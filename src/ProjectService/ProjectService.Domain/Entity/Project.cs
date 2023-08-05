@@ -7,8 +7,9 @@ public class Project : AuditableEntity
     public Guid Id { get; private set; }
     public Details Details { get; private set; }
     public Guid OwnerId { get; private set; }
-    public List<Component> Components { get; private set; }
+    public ICollection<Component> Components { get; private set; } = new HashSet<Component>();
     public Guid WorkflowId { get; private set; }
+
     private readonly List<Guid> _userIds;
     public IReadOnlyCollection<Guid> UserIds => _userIds;
     private readonly List<Guid> _adminIds;

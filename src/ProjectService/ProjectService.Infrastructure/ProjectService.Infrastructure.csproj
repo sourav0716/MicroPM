@@ -10,4 +10,9 @@
     <ProjectReference Include="..\ProjectService.Application\ProjectService.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.9" />
+  </ItemGroup>
+
 </Project>

@@ -9,12 +9,12 @@ namespace ProjectService.Infrastructure.Services
 {
     public class ComponentService : IComponentService
     {
-        public Task<Component> GetComponentByNameAsync(string name)
+        public Task<Guid> GetComponentByNameAsync(string componentName, Guid projectId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Component>> GetComponentsByNameAsync(IEnumerable<string> enumerable)
+        public Task<List<Component>> GetComponentsByNameAsync(IEnumerable<string> enumerable, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

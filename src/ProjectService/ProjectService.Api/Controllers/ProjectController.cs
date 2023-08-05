@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjectService.Application.Projects.Commands.CreateProjectCommand;
-using ProjectService.Domain.Entity;
+using ProjectService.Application.Projects.Commands.CreateProject;
 
 namespace ProjectService.Api.Controllers
 {

@@ -18,7 +18,6 @@ create table componets
     projectid uniqueidentifier not null ,
     componentname varchar(50) not null ,
     componentdescription varchar(100),
-    workflowid uniqueidentifier,
     created datetime(2),
     modified datetime(2),
     createdby uniqueidentifier,
@@ -28,7 +27,7 @@ create table componets
     REFERENCES Project(projectid)
 )
 
-create table ProjectUsers
+create table projectusers
 (
     userid uniqueidentifier not null,
     projectid uniqueidentifier not null ,
