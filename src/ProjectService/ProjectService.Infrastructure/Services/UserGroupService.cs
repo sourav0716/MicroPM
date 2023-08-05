@@ -8,7 +8,7 @@ namespace ProjectService.Infrastructure.Services
 {
     public class UserGroupService : IUserGroupService
     {
-        public Task<Guid> GetUserGroupByNameAsync(string Name)
+        public Task<Guid> GetUserGroupByNameAsync(string Name,CancellationToken token)
         {
             throw new NotImplementedException();
         }

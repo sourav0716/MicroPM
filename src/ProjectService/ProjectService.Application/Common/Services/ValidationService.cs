@@ -10,8 +10,8 @@ namespace ProjectService.Application.Common.Services
     public class ValidationService : IValidationService
     {
         private readonly IUserService _userService;
-    private readonly IWorkflowService _workflowService;
-    private readonly IUserGroupService _userGroupService;
+        private readonly IWorkflowService _workflowService;
+        private readonly IUserGroupService _userGroupService;
 
         public ValidationService(IUserGroupService userGroupService,
             IWorkflowService workflowService,
@@ -22,14 +22,15 @@ namespace ProjectService.Application.Common.Services
             _userService = userService;
         }
 
-        private async ValueTask<Guid> ValidateEntity(string entityName, Func<string, Task<Guid>> getEntityFunc)
+        private async ValueTask<Guid> ValidateEntity(string entityName, Func<string,CancellationToken, Task<Guid>> getEntityFunc)
         {
-            var entityId = await getEntityFunc(entityName).ConfigureAwait(false);
+            CancellationToken cancellationToken=new();
+            var entityId = await getEntityFunc(entityName,cancellationToken).ConfigureAwait(false);
             return entityId == Guid.Empty ? throw new NotFoundException(entityName) : entityId;
         }
         public ValueTask<Guid> ValidateUser(string ownerName)
         {
-            return ValidateEntity(ownerName, _userService.GetUserByUserNameAsync);
+            return ValidateEntity(ownerName, _userService.GetUserIdByUserNameAsync);
         }
 
         public ValueTask<Guid> ValidateUserGroup(string userGroupName)
