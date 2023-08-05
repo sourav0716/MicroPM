@@ -5,6 +5,7 @@ create table projects
     projectdescription varchar(100),
     workflowid uniqueidentifier,
     projectstatus varchar(20),
+    ownerid uniqueidentifier,
     created datetime(2),
     modified datetime(2),
     createdby uniqueidentifier,
@@ -41,3 +42,10 @@ create table ProjectUsers
     REFERENCES Project(projectid)
 )
 
+CREATE INDEX idx_projectusers_projectid ON projectusers(projectid);
+CREATE INDEX idx_projectusers_userid ON projectusers(userid);
+CREATE INDEX idx_components_projectid ON components(projectid);
+CREATE INDEX idx_components_componentname ON components(componentname);
+CREATE INDEX idx_projects_projectname ON projects(projectname);
+CREATE INDEX idx_projects_workflowid ON projects(workflowid);
+CREATE INDEX idx_projects_projectstatus ON projects(projectstatus);
