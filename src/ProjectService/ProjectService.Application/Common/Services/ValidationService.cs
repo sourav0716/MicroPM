@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 
@@ -21,9 +17,6 @@ namespace ProjectService.Application.Common.Services
             _workflowService = workflowService;
             _userService = userService;
         }
-
-       
-
         private async ValueTask<Guid> ValidateEntity(string entityName, Func<string, CancellationToken, Task<Guid>> getEntityFunc)
         {
             CancellationToken cancellationToken = new();
