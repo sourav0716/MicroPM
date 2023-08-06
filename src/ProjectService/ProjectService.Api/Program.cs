@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
         options.Filters.Add(new GlobalExceptionFilter())
     );
     builder.Services.AddApplicationServices();
-    builder.Services.AddInfrastructure();
+    builder.Services.AddInfrastructure(builder.Configuration);
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();

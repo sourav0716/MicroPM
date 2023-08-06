@@ -20,6 +20,18 @@ public class ProjectUserConfiguration : IEntityTypeConfiguration<ProjectUser>
         builder.HasOne(pu => pu.Project)
             .WithMany()
             .HasForeignKey(pu => pu.ProjectId);
+        builder.Property(p => p.Created)
+            .HasColumnName("created")
+            .HasColumnType("datetime2");
+        builder.Property(p => p.LastModified)
+            .HasColumnName("modified")
+            .HasColumnType("datetime2");
+        builder.Property(p => p.CreatedBy)
+            .HasColumnName("createdby")
+            .HasMaxLength(20);
+        builder.Property(p => p.LastModifiedBy)
+            .HasColumnName("modifiedby")
+            .HasMaxLength(20);
 
         builder.HasIndex(pu => pu.ProjectId).HasDatabaseName("idx_projectusers_projectid");
         builder.HasIndex(pu => pu.UserId).HasDatabaseName("idx_projectusers_userid");

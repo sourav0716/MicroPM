@@ -6,10 +6,10 @@ create table projects
     workflowid uniqueidentifier,
     projectstatus varchar(20),
     ownerid uniqueidentifier,
-    created datetime(2),
-    modified datetime(2),
-    createdby uniqueidentifier,
-    modifiedby uniqueidentifier
+    created datetime2,
+    modified datetime2,
+    createdby nvarchar(20),
+    modifiedby nvarchar(20)
 )
 
 create table componets
@@ -18,10 +18,10 @@ create table componets
     projectid uniqueidentifier not null ,
     componentname varchar(50) not null ,
     componentdescription varchar(100),
-    created datetime(2),
-    modified datetime(2),
-    createdby uniqueidentifier,
-    modifiedby uniqueidentifier,
+    created datetime2,
+    modified datetime2,
+    createdby nvarchar(20),
+    modifiedby nvarchar(20),
     CONSTRAINT PK_componet PRIMARY KEY (componetid,projectid),
     CONSTRAINT FK_Project_componet FOREIGN KEY (projectid)
     REFERENCES Project(projectid)
@@ -31,10 +31,10 @@ create table projectusers
 (
     userid uniqueidentifier not null,
     projectid uniqueidentifier not null ,
-    created datetime(2),
-    modified datetime(2),
-    createdby uniqueidentifier,
-    modifiedby uniqueidentifier,
+    created datetime2,
+    modified datetime2,
+    createdby nvarchar(20),
+    modifiedby nvarchar(20),
     userrole varchar(20),
     CONSTRAINT PK_componet PRIMARY KEY (userid,projectid),
     CONSTRAINT FK_Project_User FOREIGN KEY (projectid)

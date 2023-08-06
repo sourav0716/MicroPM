@@ -97,4 +97,5 @@ public class Project : AuditableEntity
     {
         ProjectStatus = newStatus;
     }
+    private Project(){}
 }
