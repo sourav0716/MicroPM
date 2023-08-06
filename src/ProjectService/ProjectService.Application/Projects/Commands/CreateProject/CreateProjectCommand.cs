@@ -2,11 +2,12 @@ using MediatR;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Domain.Entity;
 using ProjectService.Application.DTOs;
-using ProjectService.Application.Common.Models;
+using ProjectService.Application.Common.Errors;
+using OneOf;
 
 namespace ProjectService.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommand : IRequest<Result<Guid>>
+public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException,Exception>>
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -17,7 +18,9 @@ public class CreateProjectCommand : IRequest<Result<Guid>>
     public string Workflow { get; set; } = string.Empty;
     public List<string>? Admin { get; set; }
 }
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<Guid>>
+
+
+public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, OneOf<Guid, ProjectServiceException,Exception>>
 {
     private readonly IValidationService _validationService;
 
@@ -27,7 +30,9 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         _validationService = validationService;
     }
 
-    public async Task<Result<Guid>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Guid, ProjectServiceException,Exception>> Handle(
+        CreateProjectCommand request,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -69,12 +74,11 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
                 }
 
             }
-            return Result<Guid>.Success(project.Id);
+            return project.Id;
         }
         catch (Exception ex)
         {
-            return Result<Guid>.Failure(ex.Message);
+            return ex;
         }
-
     }
 }

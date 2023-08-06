@@ -1,17 +1,18 @@
 using MediatR;
+using OneOf;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateProject;
 
-public class UpdateProjectDetailsCommand : IRequest<Unit>
+public class UpdateProjectDetailsCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
 {
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
 }
-public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectDetailsCommand, Unit>
+public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectDetailsCommand, OneOf<Unit, ProjectServiceException, Exception>>
 {
     private readonly IProjectService _projectService;
 
@@ -20,17 +21,27 @@ public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectD
         _projectService = projectService;
     }
 
-    public async Task<Unit> Handle(UpdateProjectDetailsCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateProjectDetailsCommand request, CancellationToken cancellationToken)
     {
-        var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
-                      ?? throw new NotFoundException(nameof(Project), request.ProjectId);
-                      
-        project.UpdateDetails(new Details(
-                request.Name,
-                request.Description));
+        try
+        {
 
-        await _projectService.UpdateProject(project, cancellationToken);
 
-        return Unit.Value;
+            var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
+                          ?? throw new NotFoundException(nameof(Project), request.ProjectId);
+
+            project.UpdateDetails(new Details(
+                    request.Name,
+                    request.Description));
+
+            await _projectService.UpdateProject(project, cancellationToken);
+
+            return Unit.Value;
+        }
+        catch (System.Exception ex)
+        {
+
+            return ex;
+        }
     }
 }

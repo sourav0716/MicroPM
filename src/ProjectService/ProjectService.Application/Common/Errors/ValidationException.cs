@@ -2,7 +2,7 @@ using FluentValidation.Results;
 
 namespace ProjectService.Application.Common.Errors;
 
-public class ValidationException : Exception
+public class ValidationException : ProjectServiceException
 {
     public ValidationException()
         : base("One or more validation failures have occurred.")
