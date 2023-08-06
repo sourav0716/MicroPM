@@ -1,4 +1,5 @@
 using MediatR;
+using OneOf;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Application.Common.Models;
@@ -6,13 +7,13 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateUserGroupsToProject;
 
-public class UpdateUserGroupsToProjectCommand : IRequest<Unit>
+public class UpdateUserGroupsToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
 {
     public Guid ProjectId { get; set; }
     public List<string>? UserGroupNames { get; set; }
     public RequestType RequestType { get; set; }
 }
-public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUserGroupsToProjectCommand, Unit>
+public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUserGroupsToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
 {
     private readonly IProjectService _projectService;
     private readonly IUserGroupService _groupService;
@@ -23,30 +24,37 @@ public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUse
         _groupService = groupService;
     }
 
-    public async Task<Unit> Handle(UpdateUserGroupsToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateUserGroupsToProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
-                     ?? throw new NotFoundException(nameof(Project), request.ProjectId);
-        if (request.UserGroupNames != null)
+        try
         {
-            foreach (var UserGroupNames in request.UserGroupNames)
+            var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
+                         ?? throw new NotFoundException(nameof(Project), request.ProjectId);
+            if (request.UserGroupNames != null)
             {
-                Guid groupId = await _groupService.GetUserGroupByNameAsync(UserGroupNames, cancellationToken);
-                if (groupId == Guid.Empty)
+                foreach (var UserGroupNames in request.UserGroupNames)
                 {
-                    throw new NotFoundException("Group", UserGroupNames);
-                }
-                if (request.RequestType == RequestType.add)
-                {
-                    project.AddGroup(groupId);
-                }
-                else
-                {
-                    project.RemoveGroup(groupId);
+                    Guid groupId = await _groupService.GetUserGroupByNameAsync(UserGroupNames, cancellationToken);
+                    if (groupId == Guid.Empty)
+                    {
+                        throw new NotFoundException("Group", UserGroupNames);
+                    }
+                    if (request.RequestType == RequestType.add)
+                    {
+                        project.AddGroup(groupId);
+                    }
+                    else
+                    {
+                        project.RemoveGroup(groupId);
+                    }
                 }
             }
+            await _projectService.UpdateProject(project, cancellationToken);
+            return Unit.Value;
         }
-        await _projectService.UpdateProject(project, cancellationToken);
-        return Unit.Value;
+        catch (System.Exception ex)
+        {
+            return ex;
+        }
     }
 }

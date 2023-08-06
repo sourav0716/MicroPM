@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ProjectService.Application.Common.Errors;
 
 namespace ProjectService.Api.Filters;
 
@@ -10,7 +11,8 @@ public class GlobalExceptionFilter : IExceptionFilter
         var problemDetails = new ProblemDetails
         {
             Title = "An unexpected error occurred!",
-            Status = StatusCodes.Status500InternalServerError,
+            Status = context.Exception is NotFoundException ? StatusCodes.Status404NotFound 
+            : StatusCodes.Status500InternalServerError,
             Detail = context.Exception.Message,
             Instance = context.HttpContext.Request.Path
         };

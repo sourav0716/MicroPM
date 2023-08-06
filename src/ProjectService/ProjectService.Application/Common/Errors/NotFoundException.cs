@@ -1,6 +1,6 @@
 namespace ProjectService.Application.Common.Errors;
 
-public class NotFoundException : Exception
+public class NotFoundException : ProjectServiceException
 {
     public NotFoundException(string? message) : base($"Entity \"{message}\" was not found.") { }
 

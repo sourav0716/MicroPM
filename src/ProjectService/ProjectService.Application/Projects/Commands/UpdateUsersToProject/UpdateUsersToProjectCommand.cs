@@ -1,4 +1,5 @@
 using MediatR;
+using OneOf;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Application.Common.Models;
@@ -6,13 +7,13 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateUsersToProject;
 
-public class UpdateUsersToProjectCommand : IRequest<Unit>
+public class UpdateUsersToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
 {
     public Guid ProjectId { get; set; }
     public List<string>? UserNames { get; set; }
     public RequestType RequestType { get; set; }
 }
-public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToProjectCommand, Unit>
+public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
 {
     private readonly IProjectService _projectService;
     private readonly IUserService _userService;
@@ -23,30 +24,40 @@ public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToP
         _userService = userService;
     }
 
-    public async Task<Unit> Handle(UpdateUsersToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateUsersToProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
-                      ?? throw new NotFoundException(nameof(Project), request.ProjectId);
-        if (request.UserNames != null)
+        try
         {
-            foreach (var userName in request.UserNames)
+
+
+            var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
+                          ?? throw new NotFoundException(nameof(Project), request.ProjectId);
+            if (request.UserNames != null)
             {
-                Guid userId = await _userService.GetUserIdByUserNameAsync(userName, cancellationToken);
-                if (userId == Guid.Empty)
+                foreach (var userName in request.UserNames)
                 {
-                    throw new NotFoundException("userName", userName);
-                }
-                if (request.RequestType == RequestType.add)
-                {
-                    project.AddUser(userId);
-                }
-                else
-                {
-                    project.RemoveUser(userId);
+                    Guid userId = await _userService.GetUserIdByUserNameAsync(userName, cancellationToken);
+                    if (userId == Guid.Empty)
+                    {
+                        throw new NotFoundException("userName", userName);
+                    }
+                    if (request.RequestType == RequestType.add)
+                    {
+                        project.AddUser(userId);
+                    }
+                    else
+                    {
+                        project.RemoveUser(userId);
+                    }
                 }
             }
+            await _projectService.UpdateProject(project, cancellationToken);
+            return Unit.Value;
         }
-        await _projectService.UpdateProject(project, cancellationToken);
-        return Unit.Value;
+        catch (System.Exception ex)
+        {
+
+            return ex;
+        }
     }
 }

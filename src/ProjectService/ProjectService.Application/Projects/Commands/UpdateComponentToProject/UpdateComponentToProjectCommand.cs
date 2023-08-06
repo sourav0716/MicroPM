@@ -1,4 +1,5 @@
 using MediatR;
+using OneOf;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Application.Common.Models;
@@ -6,7 +7,7 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateComponentToProject;
 
-public class UpdateComponentToProjectCommand : IRequest<Unit>
+public class UpdateComponentToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
 {
     public Guid ProjectId { get; set; }
     public string ComponentName { get; set; } = string.Empty;
@@ -14,7 +15,7 @@ public class UpdateComponentToProjectCommand : IRequest<Unit>
     public RequestType RequestType { get; set; }
 }
 
-public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComponentToProjectCommand, Unit>
+public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComponentToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
 {
     private readonly IProjectService _projectService;
     private readonly IComponentService _componentService;
@@ -26,31 +27,37 @@ public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComp
         _projectService = projectService;
     }
 
-    public async Task<Unit> Handle(UpdateComponentToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateComponentToProjectCommand request, CancellationToken cancellationToken)
     {
-
-        var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
-                      ?? throw new NotFoundException(nameof(Project), request.ProjectId);
-
-        if (request.RequestType == RequestType.add)
+        try
         {
-            var component = new Details(request.ComponentName, request.ComponentDescription);
-            project.AddComponent(component);
-        }
-        else if (request.RequestType == RequestType.delete)
-        {
-            var component = await _componentService.GetComponentByNameAsync(request.ComponentName,
-                request.ProjectId,
-                cancellationToken);
-            if (component == Guid.Empty)
+            var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
+                          ?? throw new NotFoundException(nameof(Project), request.ProjectId);
+
+            if (request.RequestType == RequestType.add)
             {
-                throw new NotFoundException(nameof(Component), request.ComponentName);
+                var component = new Details(request.ComponentName, request.ComponentDescription);
+                project.AddComponent(component);
             }
-            project.RemoveComponent(component);
-        }
+            else if (request.RequestType == RequestType.delete)
+            {
+                var component = await _componentService.GetComponentByNameAsync(request.ComponentName,
+                    request.ProjectId,
+                    cancellationToken);
+                if (component == Guid.Empty)
+                {
+                    throw new NotFoundException(nameof(Component), request.ComponentName);
+                }
+                project.RemoveComponent(component);
+            }
 
-        await _projectService.UpdateProject(project, cancellationToken);
-        return Unit.Value;
+            await _projectService.UpdateProject(project, cancellationToken);
+            return Unit.Value;
+        }
+        catch (Exception ex)
+        {
+            return ex;
+        }
 
     }
 
