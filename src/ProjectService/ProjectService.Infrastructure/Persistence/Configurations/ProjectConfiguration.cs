@@ -45,10 +45,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasColumnType("datetime2");
         builder.Property(p => p.CreatedBy)
             .HasColumnName("createdby")
-            .HasMaxLength(20);
+            .HasMaxLength(50);
         builder.Property(p => p.LastModifiedBy)
             .HasColumnName("modifiedby")
-            .HasMaxLength(20);
+            .HasMaxLength(50);
         builder.HasMany(p => p.Components)
             .WithOne(c => c.Project)
             .HasForeignKey(c => c.ProjectId);

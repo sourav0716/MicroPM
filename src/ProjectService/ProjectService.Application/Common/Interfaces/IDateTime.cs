@@ -1,6 +1,6 @@
 namespace ProjectService.Application.Common.Interfaces
 {
-    public interface IDateTimeService
+    public interface IDateTime
     {
          DateTime UtcNow { get; }
     }

@@ -5,6 +5,7 @@ using ProjectService.Application.Common;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Infrastructure.Persistence;
+using ProjectService.Infrastructure.Persistence.Interceptors;
 using ProjectService.Infrastructure.Services;
 
 namespace ProjectService.Infrastructure;
@@ -19,11 +20,13 @@ public static class ConfigureServices
             options.UseSqlServer(ProjectServiceConfig.ConnectionString));
 
         services.AddTransient<IComponentService, ComponentService>();
-        services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IProjectService, ProjectServices>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IUserGroupService, UserGroupService>();
         services.AddTransient<IWorkflowService, WorkflowService>();
+
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
         return services;
     }

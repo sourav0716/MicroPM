@@ -36,10 +36,10 @@ public class ComponentConfiguration : IEntityTypeConfiguration<Component>
             .HasColumnType("datetime2");
         builder.Property(p => p.CreatedBy)
             .HasColumnName("createdby")
-            .HasMaxLength(20);
+            .HasMaxLength(50);
         builder.Property(p => p.LastModifiedBy)
             .HasColumnName("modifiedby")
-            .HasMaxLength(20);;
+            .HasMaxLength(50);;
 
         builder.HasOne(c => c.Project)
             .WithMany(p => p.Components)
