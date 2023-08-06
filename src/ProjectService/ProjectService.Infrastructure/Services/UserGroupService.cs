@@ -10,7 +10,7 @@ namespace ProjectService.Infrastructure.Services
     {
         public Task<Guid> GetUserGroupByNameAsync(string Name,CancellationToken token)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Guid.NewGuid());
         }
     }
 }

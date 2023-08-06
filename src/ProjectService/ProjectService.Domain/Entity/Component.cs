@@ -3,6 +3,7 @@ using ProjectService.Domain.Common;
 namespace ProjectService.Domain.Entity;
 public class Component : AuditableEntity
 {
+    
     public Guid Id { get; private set; }
     public Details Details { get; private set; }
     public Guid ProjectId { get; private set; }
@@ -14,10 +15,14 @@ public class Component : AuditableEntity
         Details = details;
     }
 
-    public void UpdateDetails(Details details, Guid projectid,Guid id)
+    public void UpdateDetails(Details details, Guid projectid, Guid id)
     {
         Id = id;
         Details = details;
         ProjectId = projectid;
+    }
+    private Component()
+    {
+
     }
 }

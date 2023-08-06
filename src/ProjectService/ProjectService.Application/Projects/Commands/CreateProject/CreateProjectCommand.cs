@@ -2,10 +2,11 @@ using MediatR;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Domain.Entity;
 using ProjectService.Application.DTOs;
+using ProjectService.Application.Common.Models;
 
 namespace ProjectService.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommand : IRequest<Guid>
+public class CreateProjectCommand : IRequest<Result<Guid>>
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -16,7 +17,7 @@ public class CreateProjectCommand : IRequest<Guid>
     public string Workflow { get; set; } = string.Empty;
     public List<string>? Admin { get; set; }
 }
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Guid>
+public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Result<Guid>>
 {
     private readonly IValidationService _validationService;
 
@@ -26,46 +27,54 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         _validationService = validationService;
     }
 
-    public async Task<Guid> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
-        var owner = await _validationService.ValidateUser(request.Owner);
-        Project project = new(
-            details: new Details(request.Name, request.Description),
-            ownerId: owner,
-            workflowId: await _validationService.ValidateWorkflow(request.Workflow));
-        if (request.Admin != null)
+        try
         {
-            foreach (var admin in request.Admin)
+            var owner = await _validationService.ValidateUser(request.Owner);
+            Project project = new(
+                details: new Details(request.Name, request.Description),
+                ownerId: owner,
+                workflowId: await _validationService.ValidateWorkflow(request.Workflow));
+            if (request.Admin != null)
             {
-                var user = await _validationService.ValidateUser(admin);
-                project.AddAdmin(user);
+                foreach (var admin in request.Admin)
+                {
+                    var user = await _validationService.ValidateUser(admin);
+                    project.AddAdmin(user);
+                }
             }
-        }
-        if (request.Users != null)
-        {
-            foreach (var user in request.Users)
+            if (request.Users != null)
             {
-                var userToAdd = await _validationService.ValidateUser(user);
-                project.AddUser(userToAdd);
+                foreach (var user in request.Users)
+                {
+                    var userToAdd = await _validationService.ValidateUser(user);
+                    project.AddUser(userToAdd);
+                }
             }
-        }
-        if (request.UserGroup != null)
-        {
-            foreach (var userGroup in request.UserGroup)
+            if (request.UserGroup != null)
             {
-                var userGroupToAdd = await _validationService.ValidateUserGroup(userGroup);
-                project.AddGroup(userGroupToAdd);
+                foreach (var userGroup in request.UserGroup)
+                {
+                    var userGroupToAdd = await _validationService.ValidateUserGroup(userGroup);
+                    project.AddGroup(userGroupToAdd);
+
+                }
+            }
+            if (request.Components != null)
+            {
+                foreach (var component in request.Components)
+                {
+                    project.AddComponent(new Details(component.Name, component.Description));
+                }
 
             }
+            return Result<Guid>.Success(project.Id);
         }
-        if (request.Components != null)
+        catch (Exception ex)
         {
-            foreach (var component in request.Components)
-            {
-                project.AddComponent(new Details(component.Name, component.Description));
-            }
-
+            return Result<Guid>.Failure(ex.Message);
         }
-        return project.Id;
+
     }
 }

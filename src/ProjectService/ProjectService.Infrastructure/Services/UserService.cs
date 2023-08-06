@@ -10,7 +10,7 @@ namespace ProjectService.Infrastructure.Services
     {
         public Task<Guid> GetUserIdByUserNameAsync(string username, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Guid.NewGuid());
         }
     }
 }

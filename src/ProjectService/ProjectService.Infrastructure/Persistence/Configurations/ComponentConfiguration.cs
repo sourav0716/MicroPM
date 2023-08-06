@@ -15,20 +15,37 @@ public class ComponentConfiguration : IEntityTypeConfiguration<Component>
             .ValueGeneratedNever();
         builder.Property(c => c.ProjectId)
             .HasColumnName("projectid");
-        builder.OwnsOne(c => c.Details)
-            .Property(d => d.Name)
-            .HasColumnName("componentname")
-            .IsRequired()
-            .HasMaxLength(50);
-        builder.OwnsOne(c => c.Details)
-            .Property(d => d.Description)
-            .HasColumnName("componentdescription")
-            .HasMaxLength(100);
+
+        builder.OwnsOne(p => p.Details,
+            navigationBuilder =>
+                {
+                    navigationBuilder.Property(d => d.Name)
+                                    .HasColumnName("componentName")
+                                    .HasMaxLength(50)
+                                    .IsRequired();
+                    navigationBuilder.Property(d => d.Description)
+                                    .HasColumnName("componentDescription")
+                                    .HasMaxLength(100);
+                });
+
+        builder.Property(p => p.Created)
+            .HasColumnName("created")
+            .HasColumnType("datetime2");
+        builder.Property(p => p.LastModified)
+            .HasColumnName("modified")
+            .HasColumnType("datetime2");
+        builder.Property(p => p.CreatedBy)
+            .HasColumnName("createdby")
+            .HasMaxLength(20);
+        builder.Property(p => p.LastModifiedBy)
+            .HasColumnName("modifiedby")
+            .HasMaxLength(20);;
+
         builder.HasOne(c => c.Project)
             .WithMany(p => p.Components)
             .HasForeignKey(c => c.ProjectId);
 
         builder.HasIndex(c => c.ProjectId).HasDatabaseName("idx_components_projectid");
-        builder.HasIndex(c => c.Details.Name).HasDatabaseName("idx_components_componentname");
+        // builder.HasIndex(c => c.Details.Name).HasDatabaseName("idx_components_componentname");
     }
 }
