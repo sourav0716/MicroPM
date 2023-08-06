@@ -22,10 +22,12 @@ namespace ProjectService.Application.Common.Services
             _userService = userService;
         }
 
-        private async ValueTask<Guid> ValidateEntity(string entityName, Func<string,CancellationToken, Task<Guid>> getEntityFunc)
+       
+
+        private async ValueTask<Guid> ValidateEntity(string entityName, Func<string, CancellationToken, Task<Guid>> getEntityFunc)
         {
-            CancellationToken cancellationToken=new();
-            var entityId = await getEntityFunc(entityName,cancellationToken).ConfigureAwait(false);
+            CancellationToken cancellationToken = new();
+            var entityId = await getEntityFunc(entityName, cancellationToken).ConfigureAwait(false);
             return entityId == Guid.Empty ? throw new NotFoundException(entityName) : entityId;
         }
         public ValueTask<Guid> ValidateUser(string ownerName)
@@ -43,5 +45,6 @@ namespace ProjectService.Application.Common.Services
             return ValidateEntity(workflowName, _workflowService.GetWorkflowByNameAsync);
 
         }
+
     }
 }

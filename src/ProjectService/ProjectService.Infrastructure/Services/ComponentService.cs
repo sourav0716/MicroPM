@@ -11,7 +11,7 @@ namespace ProjectService.Infrastructure.Services
     {
         public Task<Guid> GetComponentByNameAsync(string componentName, Guid projectId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Guid.NewGuid());
         }
 
         public Task<List<Component>> GetComponentsByNameAsync(IEnumerable<string> enumerable, CancellationToken cancellationToken)

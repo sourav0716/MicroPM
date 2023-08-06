@@ -12,7 +12,7 @@ namespace ProjectService.Infrastructure.Services
 
         public Task<Guid> GetWorkflowByNameAsync(string Workflowname, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Guid.NewGuid());
         }
     }
 }
