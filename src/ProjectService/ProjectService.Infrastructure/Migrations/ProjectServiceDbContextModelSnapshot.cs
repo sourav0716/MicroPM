@@ -37,8 +37,8 @@ namespace ProjectService.Infrastructure.Migrations
                         .HasColumnName("created");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("createdby");
 
                     b.Property<bool>("IsDeleted")
@@ -49,8 +49,8 @@ namespace ProjectService.Infrastructure.Migrations
                         .HasColumnName("modified");
 
                     b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("modifiedby");
 
                     b.HasKey("Id", "ProjectId");
@@ -72,8 +72,8 @@ namespace ProjectService.Infrastructure.Migrations
                         .HasColumnName("created");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("createdby");
 
                     b.Property<bool>("IsDeleted")
@@ -84,8 +84,8 @@ namespace ProjectService.Infrastructure.Migrations
                         .HasColumnName("modified");
 
                     b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("modifiedby");
 
                     b.Property<Guid>("OwnerId")
@@ -143,10 +143,8 @@ namespace ProjectService.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("modifiedby");
 
-                    b.Property<string>("UserRole")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                    b.Property<int>("UserRole")
+                        .HasColumnType("int")
                         .HasColumnName("userrole");
 
                     b.HasKey("UserId", "ProjectId");
@@ -236,7 +234,7 @@ namespace ProjectService.Infrastructure.Migrations
             modelBuilder.Entity("ProjectService.Domain.Entity.ProjectUser", b =>
                 {
                     b.HasOne("ProjectService.Domain.Entity.Project", "Project")
-                        .WithMany()
+                        .WithMany("ProjectUsers")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -247,6 +245,8 @@ namespace ProjectService.Infrastructure.Migrations
             modelBuilder.Entity("ProjectService.Domain.Entity.Project", b =>
                 {
                     b.Navigation("Components");
+
+                    b.Navigation("ProjectUsers");
                 });
 #pragma warning restore 612, 618
         }

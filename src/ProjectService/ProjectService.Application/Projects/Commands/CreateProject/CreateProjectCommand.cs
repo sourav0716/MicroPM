@@ -4,10 +4,12 @@ using ProjectService.Domain.Entity;
 using ProjectService.Application.DTOs;
 using ProjectService.Application.Common.Errors;
 using OneOf;
+using ProjectService.Application.Common;
+using ProjectService.Domain.Common;
 
 namespace ProjectService.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException,Exception>>
+public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException, Exception>>
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -20,17 +22,19 @@ public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException
 }
 
 
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, OneOf<Guid, ProjectServiceException,Exception>>
+public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, OneOf<Guid, ProjectServiceException, Exception>>
 {
     private readonly IValidationService _validationService;
+    private readonly IProjectService _projectService;
 
-
-    public CreateProjectCommandHandler(IValidationService validationService)
+    public CreateProjectCommandHandler(IValidationService validationService,
+                                       IProjectService projectService)
     {
         _validationService = validationService;
+        _projectService = projectService;
     }
 
-    public async Task<OneOf<Guid, ProjectServiceException,Exception>> Handle(
+    public async Task<OneOf<Guid, ProjectServiceException, Exception>> Handle(
         CreateProjectCommand request,
         CancellationToken cancellationToken)
     {
@@ -54,15 +58,18 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
                 foreach (var user in request.Users)
                 {
                     var userToAdd = await _validationService.ValidateUser(user);
-                    project.AddUser(userToAdd);
+                    project.AddUser(userToAdd, UserRole.user);
                 }
             }
             if (request.UserGroup != null)
             {
                 foreach (var userGroup in request.UserGroup)
                 {
-                    var userGroupToAdd = await _validationService.ValidateUserGroup(userGroup);
-                    project.AddGroup(userGroupToAdd);
+                    var listofUser = await _validationService.ValidateUserGroup(userGroup);
+                    if (listofUser != null)
+                    {
+                        project.AddUsers(listofUser);
+                    }
 
                 }
             }
@@ -74,6 +81,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
                 }
 
             }
+            await _projectService.AddProject(project);
             return project.Id;
         }
         catch (Exception ex)

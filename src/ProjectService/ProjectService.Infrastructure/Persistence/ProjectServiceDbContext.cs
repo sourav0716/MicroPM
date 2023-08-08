@@ -20,9 +20,9 @@ public class ProjectServiceDbContext : DbContext
         _mediator = mediator;
     }
 
-    public DbSet<Project>? Projects { get; set; }
-    public DbSet<Component>? Components { get; set; }
-    public DbSet<ProjectUser>? ProjectUsers { get; set; }
+    public DbSet<Project> Projects { get; set; }
+    public DbSet<Component> Components { get; set; }
+    public DbSet<ProjectUser> ProjectUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

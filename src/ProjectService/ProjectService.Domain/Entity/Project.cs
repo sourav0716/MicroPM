@@ -10,12 +10,7 @@ public class Project : AuditableEntity
     public ICollection<Component> Components { get; private set; } = new HashSet<Component>();
     public Guid WorkflowId { get; private set; }
 
-    private readonly List<Guid> _userIds;
-    public IReadOnlyCollection<Guid> UserIds => _userIds;
-    private readonly List<Guid> _adminIds;
-    public IReadOnlyCollection<Guid> AdminIds => _adminIds;
-    private readonly List<Guid> _groupIds;
-    public IReadOnlyCollection<Guid> GroupIds => _groupIds;
+    public ICollection<ProjectUser> ProjectUsers { get; private set; } = new HashSet<ProjectUser>();
     public ProjectStatus ProjectStatus { get; private set; }
 
     public Project(Details details, Guid ownerId, Guid workflowId)
@@ -25,9 +20,7 @@ public class Project : AuditableEntity
         OwnerId = ownerId;
         Components = new List<Component>();
         WorkflowId = workflowId;
-        _userIds = new List<Guid>();
-        _adminIds = new List<Guid>();
-        _groupIds = new List<Guid>();
+        ProjectUsers = new List<ProjectUser>();
 
         AddDomainEvent(new ProjectCreatedEvent(this));
     }
@@ -45,20 +38,30 @@ public class Project : AuditableEntity
         }
     }
 
-    public void AddUser(Guid userId)
+    public void AddUser(Guid userId, UserRole role)
     {
-        if (!_userIds.Contains(userId))
+        if (!ProjectUsers.Any(pu => pu.UserId == userId))
         {
-            _userIds.Add(userId);
-        };
+            ProjectUsers.Add(new ProjectUser { UserId = userId, UserRole = role });
+        }
     }
+    public void AddUsers(List<Guid> userIds)
+    {
+        var existingUserIds = ProjectUsers.Select(pu => pu.UserId).ToHashSet();
+
+        foreach (var userId in userIds)
+        {
+            if (!existingUserIds.Contains(userId))
+            {
+                ProjectUsers.Add(new ProjectUser { UserId = userId, UserRole = UserRole.user });
+            }
+        }
+    }
+
 
     public void AddAdmin(Guid adminId)
     {
-        if (!_adminIds.Contains(adminId))
-        {
-            _adminIds.Add(adminId);
-        };
+        AddUser(adminId, UserRole.admin);
     }
 
     public void AssignWorkflow(Guid workflowId)
@@ -66,24 +69,19 @@ public class Project : AuditableEntity
         WorkflowId = workflowId;
     }
 
-    public void AddGroup(Guid groupId)
+
+
+    public void RemoveUser(Guid userId)
     {
-        if (!_groupIds.Contains(groupId))
+        var user = ProjectUsers.FirstOrDefault(pu => pu.UserId == userId);
+        if (user != null)
         {
-            _groupIds.Add(groupId);
-        };
+            ProjectUsers.Remove(user);
+        }
     }
-    public bool RemoveUser(Guid userId)
+    public void RemoveAdmin(Guid adminId)
     {
-        return _adminIds.Remove(userId);
-    }
-    public bool RemoveAdmin(Guid adminId)
-    {
-        return _userIds.Remove(adminId);
-    }
-    public bool RemoveGroup(Guid groupId)
-    {
-        return _groupIds.Remove(groupId);
+        RemoveUser(adminId);
     }
     public void UpdateDetails(Details details)
     {
@@ -93,9 +91,18 @@ public class Project : AuditableEntity
     {
         WorkflowId = workflowId;
     }
+    public void RemoveUsers(List<Guid> userIds)
+    {
+        var usersToRemove = ProjectUsers.Where(pu => userIds.Contains(pu.UserId)).ToList();
+
+        foreach (var user in usersToRemove)
+        {
+            ProjectUsers.Remove(user);
+        }
+    }
     public void ChangeStatus(ProjectStatus newStatus)
     {
         ProjectStatus = newStatus;
     }
-    private Project(){}
+    private Project() { }
 }

@@ -4,5 +4,7 @@ namespace ProjectService.Application.Common.Interfaces;
 
 public interface IUserGroupService
 {
-    public Task<Guid> GetUserGroupByNameAsync(string Name,CancellationToken cancellationToken);
+    public Task<List<Guid>> GetUsersByNameAsync(string userGroupNames,CancellationToken cancellationToken);
+    public Task<List<Guid>> GetUsersByIDAsync(Guid Id,CancellationToken cancellationToken);
+
 }

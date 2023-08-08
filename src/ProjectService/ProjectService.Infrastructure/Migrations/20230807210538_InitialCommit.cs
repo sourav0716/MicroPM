@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjectService.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCommit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,9 +22,9 @@ namespace ProjectService.Infrastructure.Migrations
                     workflowid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     projectstatus = table.Column<int>(type: "int", maxLength: 20, nullable: false),
                     created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    createdby = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    createdby = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     modified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    modifiedby = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    modifiedby = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -41,9 +41,9 @@ namespace ProjectService.Infrastructure.Migrations
                     componentName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     componentDescription = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    createdby = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    createdby = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     modified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    modifiedby = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    modifiedby = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -63,7 +63,7 @@ namespace ProjectService.Infrastructure.Migrations
                 {
                     userid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     projectid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    userrole = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    userrole = table.Column<int>(type: "int", nullable: false),
                     created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     createdby = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     modified = table.Column<DateTime>(type: "datetime2", nullable: true),

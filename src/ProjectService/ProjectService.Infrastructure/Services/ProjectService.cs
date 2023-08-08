@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Domain.Entity;
 using ProjectService.Infrastructure.Persistence;
@@ -7,37 +9,40 @@ namespace ProjectService.Infrastructure.Services;
 
 public class ProjectServices : IProjectService
 {
+    private readonly ProjectServiceDbContext _context;
 
-
-    public List<Project> projects = new List<Project>();
-    public Task<Project> AddProject(Project project)
+    public ProjectServices(ProjectServiceDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+    public async Task<Guid> AddProject(Project project)
+    {
+        _context.Add(project);
+        await _context.SaveChangesAsync();
+        return project.Id;
     }
 
-    public Task<bool> DeleteProject(string projectName, CancellationToken cancellationToken)
+
+    public async Task<bool> DeleteProjectById(Project project, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _context.Remove(project);
+        return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 
-    public Task<bool> DeleteProjectById(Guid projectId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 
     public Task<List<Project>> GetAllProjectsAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Project> GetProjectByIdAsync(Guid projectId, CancellationToken cancellationToken)
+    public async Task<Project>? GetProjectByIdAsync(Guid projectId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
     }
 
     public async Task<Project>? GetProjectByNameAsync(string projectName, CancellationToken cancellationToken)
     {
-        return null;
+        return await _context.Projects.FirstOrDefaultAsync(p => p.Details.Name == projectName, cancellationToken);
     }
 
     public Task<List<Project>> GetProjectsByNameAndIdAsync(string projectName, Guid projectId, CancellationToken cancellationToken)
@@ -55,28 +60,9 @@ public class ProjectServices : IProjectService
         throw new NotImplementedException();
     }
 
-    public Task<bool> ProjectExists(string projectName, CancellationToken cancellationToken)
+    public async Task UpdateProject(Project project, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> ProjectExistsById(Guid projectId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> ProjectExistsByName(string projectName, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> ProjectExistsByNameAndId(string projectName, Guid projectId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Project> UpdateProject(Project project, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+        _context.Update(project);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

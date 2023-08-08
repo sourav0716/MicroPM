@@ -8,9 +8,14 @@ namespace ProjectService.Infrastructure.Services
 {
     public class UserGroupService : IUserGroupService
     {
-        public Task<Guid> GetUserGroupByNameAsync(string Name,CancellationToken token)
+        public Task<List<Guid>> GetUsersByIDAsync(Guid Id, CancellationToken cancellationToken)
         {
-            return Task.FromResult(Guid.NewGuid());
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Guid>> GetUsersByNameAsync(string userGroupNames, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

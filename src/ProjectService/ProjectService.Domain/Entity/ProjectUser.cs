@@ -7,7 +7,7 @@ namespace ProjectService.Domain.Entity
         public Guid UserId { get; set; }
         public Guid ProjectId { get; set; }
         public Project? Project { get; set; }
-        public string UserRole { get; set; } = string.Empty;
+        public UserRole UserRole { get; set; }
         
     }
 }
