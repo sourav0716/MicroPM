@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Domain.Entity;
 using ProjectService.Infrastructure.Persistence;

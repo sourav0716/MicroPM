@@ -7,12 +7,12 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateWorkFlowToProject;
 
-public class UpdateWorkFlowToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateWorkFlowToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
     public string WorkFlowName { get; set; } = string.Empty;
 }
-public class UpdateWorkFlowToProjectCommandHandler : IRequestHandler<UpdateWorkFlowToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateWorkFlowToProjectCommandHandler : IRequestHandler<UpdateWorkFlowToProjectCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
     private readonly IWorkflowService _workflowService;
@@ -23,7 +23,7 @@ public class UpdateWorkFlowToProjectCommandHandler : IRequestHandler<UpdateWorkF
         _workflowService = workflowService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateWorkFlowToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(UpdateWorkFlowToProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -43,7 +43,7 @@ public class UpdateWorkFlowToProjectCommandHandler : IRequestHandler<UpdateWorkF
 
             return Unit.Value;
         }
-        catch (Exception ex)
+        catch (ProjectServiceException ex)
         {
             return ex;
         }

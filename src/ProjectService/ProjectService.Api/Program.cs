@@ -4,10 +4,10 @@ using ProjectService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddControllers();
-        /*options =>
+    builder.Services.AddControllers(
+        options =>
         options.Filters.Add(new GlobalExceptionFilter())
-    );*/
+    );
     builder.Services.AddApplicationServices();
     builder.Services.AddInfrastructure(builder.Configuration);
 

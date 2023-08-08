@@ -6,10 +6,11 @@ using ProjectService.Application.Common.Errors;
 using OneOf;
 using ProjectService.Application.Common;
 using ProjectService.Domain.Common;
+using Serilog;
 
 namespace ProjectService.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException, Exception>>
+public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException>>
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -22,19 +23,21 @@ public class CreateProjectCommand : IRequest<OneOf<Guid, ProjectServiceException
 }
 
 
-public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, OneOf<Guid, ProjectServiceException, Exception>>
+public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, OneOf<Guid, ProjectServiceException>>
 {
     private readonly IValidationService _validationService;
     private readonly IProjectService _projectService;
+    private readonly ILogger _logger;
 
     public CreateProjectCommandHandler(IValidationService validationService,
                                        IProjectService projectService)
     {
         _validationService = validationService;
         _projectService = projectService;
+        _logger = Log.ForContext<CreateProjectCommandHandler>();
     }
 
-    public async Task<OneOf<Guid, ProjectServiceException, Exception>> Handle(
+    public async Task<OneOf<Guid, ProjectServiceException>> Handle(
         CreateProjectCommand request,
         CancellationToken cancellationToken)
     {
@@ -84,9 +87,10 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             await _projectService.AddProject(project);
             return project.Id;
         }
-        catch (Exception ex)
+        catch(ProjectServiceException ex)
         {
             return ex;
         }
+        
     }
 }

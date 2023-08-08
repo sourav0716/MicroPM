@@ -10,12 +10,11 @@ namespace ProjectService.Api.Common.Handlers;
 
 public static class ResultHandler
 {
-    public static IActionResult Handle<T>(OneOf<T, ProjectServiceException,Exception> result)
+    public static IActionResult Handle<T>(OneOf<T, ProjectServiceException> result)
     {
         return result.Match<IActionResult>(
             success => new OkObjectResult(success),
-            error => new BadRequestObjectResult(error.Message),
-            exception => new BadRequestObjectResult(exception.Message)
+            error => new BadRequestObjectResult(error.Message)
         );
     }
 }

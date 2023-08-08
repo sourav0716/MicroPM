@@ -7,13 +7,13 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateUserGroupsToProject;
 
-public class UpdateUserGroupsToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateUserGroupsToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
     public List<string>? UserGroupNames { get; set; }
     public RequestType RequestType { get; set; }
 }
-public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUserGroupsToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUserGroupsToProjectCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
     private readonly IUserGroupService _groupService;
@@ -24,7 +24,7 @@ public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUse
         _groupService = groupService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateUserGroupsToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(UpdateUserGroupsToProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -48,7 +48,7 @@ public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUse
             await _projectService.UpdateProject(project, cancellationToken);
             return Unit.Value;
         }
-        catch (System.Exception ex)
+        catch (ProjectServiceException ex)
         {
             return ex;
         }

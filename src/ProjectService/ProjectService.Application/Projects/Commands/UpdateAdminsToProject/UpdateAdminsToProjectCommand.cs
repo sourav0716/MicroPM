@@ -7,14 +7,14 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateAdminsToProject;
 
-public class UpdateAdminsToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateAdminsToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
     public List<string>? Admins { get; set; }
     public RequestType RequestType { get; set; }
 }
 public class UpdateAdminsToProjectCommandHandler
-: IRequestHandler<UpdateAdminsToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
+: IRequestHandler<UpdateAdminsToProjectCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
     private readonly IUserService _userService;
@@ -25,7 +25,7 @@ public class UpdateAdminsToProjectCommandHandler
         _userService = userService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateAdminsToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(UpdateAdminsToProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -53,7 +53,7 @@ public class UpdateAdminsToProjectCommandHandler
             await _projectService.UpdateProject(project, cancellationToken);
             return Unit.Value;
         }
-        catch (System.Exception ex)
+        catch (ProjectServiceException ex)
         {
 
             return ex;

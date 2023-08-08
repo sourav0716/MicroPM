@@ -7,7 +7,7 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateComponentToProject;
 
-public class UpdateComponentToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateComponentToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
     public string ComponentName { get; set; } = string.Empty;
@@ -15,7 +15,7 @@ public class UpdateComponentToProjectCommand : IRequest<OneOf<Unit, ProjectServi
     public RequestType RequestType { get; set; }
 }
 
-public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComponentToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComponentToProjectCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
     private readonly IComponentService _componentService;
@@ -27,7 +27,7 @@ public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComp
         _projectService = projectService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateComponentToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(UpdateComponentToProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -50,16 +50,12 @@ public class UpdateComponentToProjectCommandHandler : IRequestHandler<UpdateComp
                 }
                 project.RemoveComponent(component);
             }
-
             await _projectService.UpdateProject(project, cancellationToken);
             return Unit.Value;
         }
-        catch (Exception ex)
+        catch (ProjectServiceException ex)
         {
             return ex;
         }
-
     }
-
-
 }

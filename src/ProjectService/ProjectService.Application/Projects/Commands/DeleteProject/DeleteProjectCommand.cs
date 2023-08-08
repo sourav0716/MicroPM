@@ -7,11 +7,11 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.DeleteProject;
 
-public class DeleteProjectCommand : IRequest<OneOf<Unit, ProjectServiceException,Exception>>
+public class DeleteProjectCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
 }
-public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, OneOf<Unit, ProjectServiceException,Exception>>
+public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
 
@@ -20,7 +20,7 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
         _projectService = projectService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException,Exception>> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -29,7 +29,7 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
         project.ChangeStatus(ProjectStatus.deleted);
         return Unit.Value;
         }
-        catch(Exception ex)
+        catch(ProjectServiceException ex)
         {
             return ex;
         }

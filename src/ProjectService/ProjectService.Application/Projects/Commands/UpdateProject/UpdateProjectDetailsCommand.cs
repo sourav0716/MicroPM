@@ -6,13 +6,13 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateProject;
 
-public class UpdateProjectDetailsCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateProjectDetailsCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
 }
-public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectDetailsCommand, OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectDetailsCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
 
@@ -21,7 +21,7 @@ public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectD
         _projectService = projectService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateProjectDetailsCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(UpdateProjectDetailsCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -38,7 +38,7 @@ public class UpdateProjectDetailsCommandHandler : IRequestHandler<UpdateProjectD
 
             return Unit.Value;
         }
-        catch (System.Exception ex)
+        catch (ProjectServiceException ex)
         {
 
             return ex;

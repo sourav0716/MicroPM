@@ -10,16 +10,37 @@ public class GlobalExceptionFilter : IExceptionFilter
     {
         var problemDetails = new ProblemDetails
         {
-            Title = "An unexpected error occurred!",
-            Status = context.Exception is NotFoundException ? StatusCodes.Status404NotFound 
-            : StatusCodes.Status500InternalServerError,
-            Detail = context.Exception.Message,
-            Instance = context.HttpContext.Request.Path
+            Instance = context.HttpContext.Request.Path,
+            
         };
+
+        switch (context.Exception)
+        {
+            case ValidationException validationException:
+                problemDetails.Title = "Validation error";
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                problemDetails.Detail = string.Join(", ", validationException.Errors.Select(e =>
+                {
+                    return e.Value;
+                }));
+                break;
+
+            case NotFoundException notFoundException:
+                problemDetails.Title = "Resource not found";
+                problemDetails.Status = StatusCodes.Status404NotFound;
+                problemDetails.Detail = notFoundException.Message;
+                break;
+
+            default:
+                problemDetails.Title = "An unexpected error occurred!";
+                problemDetails.Status = StatusCodes.Status500InternalServerError;
+                problemDetails.Detail = context.Exception.Message;
+                break;
+        }
 
         context.Result = new ObjectResult(problemDetails)
         {
-            StatusCode = StatusCodes.Status500InternalServerError
+            StatusCode = problemDetails.Status
         };
         context.ExceptionHandled = true;
     }

@@ -8,13 +8,13 @@ using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateUsersToProject;
 
-public class UpdateUsersToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateUsersToProjectCommand : IRequest<OneOf<Unit, ProjectServiceException>>
 {
     public Guid ProjectId { get; set; }
     public List<string>? UserNames { get; set; }
     public RequestType RequestType { get; set; }
 }
-public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToProjectCommand, OneOf<Unit, ProjectServiceException, Exception>>
+public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToProjectCommand, OneOf<Unit, ProjectServiceException>>
 {
     private readonly IProjectService _projectService;
     private readonly IUserService _userService;
@@ -25,7 +25,7 @@ public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToP
         _userService = userService;
     }
 
-    public async Task<OneOf<Unit, ProjectServiceException, Exception>> Handle(UpdateUsersToProjectCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<Unit, ProjectServiceException>> Handle(UpdateUsersToProjectCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -54,7 +54,7 @@ public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToP
             await _projectService.UpdateProject(project, cancellationToken);
             return Unit.Value;
         }
-        catch (System.Exception ex)
+        catch (ProjectServiceException ex)
         {
 
             return ex;
