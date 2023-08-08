@@ -27,10 +27,11 @@ public class UpdateWorkFlowToProjectCommandHandler : IRequestHandler<UpdateWorkF
     {
         try
         {
-            var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
-                          ?? throw new NotFoundException(nameof(Project), request.ProjectId);
-
-
+            var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken);
+            if(project == null)
+            {
+                throw new NotFoundException("Project", request.ProjectId);
+            }
             var workflow = await _workflowService.GetWorkflowByNameAsync(request.WorkFlowName, cancellationToken);
             if (workflow == Guid.Empty)
             {

@@ -3,6 +3,7 @@ using OneOf;
 using ProjectService.Application.Common.Errors;
 using ProjectService.Application.Common.Interfaces;
 using ProjectService.Application.Common.Models;
+using ProjectService.Domain.Common;
 using ProjectService.Domain.Entity;
 
 namespace ProjectService.Application.Projects.Commands.UpdateUsersToProject;
@@ -28,8 +29,6 @@ public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToP
     {
         try
         {
-
-
             var project = await _projectService.GetProjectByIdAsync(request.ProjectId, cancellationToken)
                           ?? throw new NotFoundException(nameof(Project), request.ProjectId);
             if (request.UserNames != null)
@@ -43,7 +42,8 @@ public class UpdateUsersToProjectCommandHandler : IRequestHandler<UpdateUsersToP
                     }
                     if (request.RequestType == RequestType.add)
                     {
-                        project.AddUser(userId);
+                        project.AddUser(userId, UserRole.user
+                        );
                     }
                     else
                     {

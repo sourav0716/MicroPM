@@ -15,11 +15,7 @@ public class ProjectUserConfiguration : IEntityTypeConfiguration<ProjectUser>
         builder.Property(pu => pu.ProjectId)
             .HasColumnName("projectid");
         builder.Property(pu => pu.UserRole)
-            .HasColumnName("userrole")
-            .HasMaxLength(20);
-        builder.HasOne(pu => pu.Project)
-            .WithMany()
-            .HasForeignKey(pu => pu.ProjectId);
+            .HasColumnName("userrole");
         builder.Property(p => p.Created)
             .HasColumnName("created")
             .HasColumnType("datetime2");
@@ -32,7 +28,9 @@ public class ProjectUserConfiguration : IEntityTypeConfiguration<ProjectUser>
         builder.Property(p => p.LastModifiedBy)
             .HasColumnName("modifiedby")
             .HasMaxLength(20);
-
+        builder.HasOne(pu => pu.Project)
+            .WithMany(p => p.ProjectUsers)
+            .HasForeignKey(pu => pu.ProjectId);
         builder.HasIndex(pu => pu.ProjectId).HasDatabaseName("idx_projectusers_projectid");
         builder.HasIndex(pu => pu.UserId).HasDatabaseName("idx_projectusers_userid");
     }

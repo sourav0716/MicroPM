@@ -34,18 +34,14 @@ public class UpdateUserGroupsToProjectCommandHandler : IRequestHandler<UpdateUse
             {
                 foreach (var UserGroupNames in request.UserGroupNames)
                 {
-                    Guid groupId = await _groupService.GetUserGroupByNameAsync(UserGroupNames, cancellationToken);
-                    if (groupId == Guid.Empty)
-                    {
-                        throw new NotFoundException("Group", UserGroupNames);
-                    }
+                    List<Guid> UserIds = await _groupService.GetUsersByNameAsync(UserGroupNames,cancellationToken);
                     if (request.RequestType == RequestType.add)
                     {
-                        project.AddGroup(groupId);
+                        project.AddUsers(UserIds);
                     }
                     else
                     {
-                        project.RemoveGroup(groupId);
+                        project.RemoveUsers(UserIds);
                     }
                 }
             }

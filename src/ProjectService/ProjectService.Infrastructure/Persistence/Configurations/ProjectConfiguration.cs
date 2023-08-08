@@ -49,9 +49,14 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.LastModifiedBy)
             .HasColumnName("modifiedby")
             .HasMaxLength(50);
+
         builder.HasMany(p => p.Components)
             .WithOne(c => c.Project)
             .HasForeignKey(c => c.ProjectId);
+        builder.HasMany(p => p.ProjectUsers)
+            .WithOne(pu => pu.Project)
+            .HasForeignKey(pu => pu.ProjectId);
+            
         //indexes
        // builder.HasIndex(p => p.Details.Name).HasDatabaseName("idx_projects_projectname");
         builder.HasIndex(p => p.WorkflowId).HasDatabaseName("idx_projects_workflowid");
