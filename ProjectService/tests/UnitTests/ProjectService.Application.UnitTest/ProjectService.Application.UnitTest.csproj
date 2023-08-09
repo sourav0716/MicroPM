@@ -22,10 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ProjectService\ProjectService.Domain\ProjectService.Domain.csproj" />
-    <ProjectReference Include="..\..\src\ProjectService\ProjectService.Application\ProjectService.Application.csproj" />
-    <ProjectReference Include="..\..\src\ProjectService\ProjectService.Api\ProjectService.Api.csproj" />
-    <ProjectReference Include="..\..\src\ProjectService\ProjectService.Infrastructure\ProjectService.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\ProjectService\ProjectService.Application\ProjectService.Application.csproj" />
   </ItemGroup>
 
 </Project>
