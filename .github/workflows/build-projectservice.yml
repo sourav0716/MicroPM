@@ -2,13 +2,8 @@ name: Build ProjectService
 
 on:
   push:
-    branches: [ main ]
-    paths:
-    - 'ProjectService/**'
-  pull_request:
-    branches: [ main ]
-    paths:
-    - 'ProjectService/**'
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
